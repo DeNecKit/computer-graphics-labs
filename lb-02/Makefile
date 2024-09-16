@@ -1,4 +1,4 @@
-PHONY: all
+.PHONY: all
 
 all: stb_image_write.o
 	gcc main.c stb_image_write.o -o main.exe -O3 -Wall -Wextra
