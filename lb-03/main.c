@@ -11,7 +11,7 @@ typedef struct { float h, s, v; } hsv_t;
 const char *get_file_ext(const char *filename)
 {
     while (*filename && *filename != '.') filename++;
-    return ++filename;
+    return filename;
 }
 
 void write_image(const char *filename,
@@ -19,9 +19,9 @@ void write_image(const char *filename,
                  unsigned char *data)
 {
     const char *ext = get_file_ext(filename);
-    if (strcmp(ext, "jpg") == 0) {
+    if (strcmp(ext, ".jpg") == 0) {
         stbi_write_jpg(filename, w, h, ch, data, 100);
-    } else if (strcmp(ext, "png") == 0) {
+    } else if (strcmp(ext, ".png") == 0) {
         stbi_write_png(filename, w, h, ch, data, w * ch);
     } else {
         fprintf(stderr, "Unsupported file extension: \"%s\"\n", ext);
