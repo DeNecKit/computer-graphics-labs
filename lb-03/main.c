@@ -6,8 +6,28 @@
 #include "stb_image_write.h"
 
 typedef struct { float r, g ,b; } rgb_t;
-
 typedef struct { float h, s, v; } hsv_t;
+
+const char *get_file_ext(const char *filename)
+{
+    while (*filename && *filename != '.') filename++;
+    return ++filename;
+}
+
+void write_image(const char *filename,
+                 int w, int h, int ch,
+                 unsigned char *data)
+{
+    const char *ext = get_file_ext(filename);
+    if (strcmp(ext, "jpg") == 0) {
+        stbi_write_jpg(filename, w, h, ch, data, 100);
+    } else if (strcmp(ext, "png") == 0) {
+        stbi_write_png(filename, w, h, ch, data, w * ch);
+    } else {
+        fprintf(stderr, "Unsupported file extension: \"%s\"\n", ext);
+        exit(1);
+    }
+}
 
 hsv_t rgb_to_hsv(rgb_t cin)
 {
@@ -28,30 +48,19 @@ hsv_t rgb_to_hsv(rgb_t cin)
     return cout;
 }
 
-rgb_t hsv_to_rgb(hsv_t cin)
+int main(int argc, char *argv[])
 {
-    float c = cin.v * cin.s;
-    float x = c * (1.f - fabsf(fmodf(cin.h / 60.f, 2.f) - 1.f));
-    float m = cin.v - c;
-    rgb_t cout = { 0 };
-    if (cin.h < 60) cout = (rgb_t){ c, x, 0 };
-    else if (cin.h < 120) cout = (rgb_t){ x, c, 0 };
-    else if (cin.h < 180) cout = (rgb_t){ 0, c, x };
-    else if (cin.h < 240) cout = (rgb_t){ 0, x, c };
-    else if (cin.h < 300) cout = (rgb_t){ x, 0, c };
-    else cout = (rgb_t){ c, 0, x };
-    cout.r += m;
-    cout.g += m;
-    cout.b += m;
-    cout.r = fmaxf(fminf(cout.r, 1.f), 0.f);
-    cout.g = fmaxf(fminf(cout.g, 1.f), 0.f);
-    cout.b = fmaxf(fminf(cout.b, 1.f), 0.f);
-    return cout;
-}
-
-int main(void)
-{
-    const char *input = "image.jpg";
+    if (argc < 2) {
+        fprintf(stderr, "Expected image filename\n");
+        exit(1);
+    }
+    if (argc < 4) {
+        fprintf(stderr, "Expected 2 output image filenames\n");
+        exit(1);
+    }
+    const char *input = argv[1];
+    const char *output1 = argv[2];
+    const char *output2 = argv[3];
     int w, h, ch;
     unsigned char *image = stbi_load(input, &w, &h, &ch, STBI_rgb);
     const int n = w * h;
@@ -82,11 +91,9 @@ int main(void)
         image_overlapped[ch*i + 2] = fmaxf(fminf(rgb_orig.b * rgb.b, 1.f), 0.f) * 255.f;
     }
 
-    const char *output1 = "image_contrast.jpg";
-    const char *output2 = "image_overlapped.jpg";
-    stbi_write_jpg(output1, w, h, ch, image_contrast, 100);
+    write_image(output1, w, h, ch, image_contrast);
     printf("Saved \"%s\"\n", output1);
-    stbi_write_jpg(output2, w, h, ch, image_overlapped, 100);
+    write_image(output2, w, h, ch, image_overlapped);
     printf("Saved \"%s\"\n", output2);
     stbi_image_free(image);
     free(image_contrast);
