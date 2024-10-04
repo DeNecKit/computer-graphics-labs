@@ -112,4 +112,7 @@ int main(int argc, char *argv[])
     write_image(output3, w, h, ch, image_output3);
 
     stbi_image_free(image);
+    free(output1);
+    free(output2);
+    free(output3);
 }
