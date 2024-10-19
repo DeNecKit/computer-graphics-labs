@@ -8,10 +8,10 @@ LIBS = -lm
 .PHONY: run
 
 ${OUT}: ${OBJ}
-	${CC} ${OBJ} -o ${OUT} ${CFLAGS} ${LIBS}
+	${CC} ${OBJ} -o ${OUT} ${LIBS}
 
 %.o: %.c
-	${CC} -c $< -o $@ ${CFLAGS} ${LIBS}
+	${CC} -c $< -o $@ ${CFLAGS}
 
 run: ${OUT}
 	./${OUT}
