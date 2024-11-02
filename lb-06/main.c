@@ -144,8 +144,8 @@ int main(void)
         if (c1 & c2) continue;
 
         if (!c1 && !c2) {
-            x1 -= wx1;
-            y1 -= wy1;
+            x1 -= wx1; x2 -= wx1;
+            y1 -= wy1; y2 -= wx1;
             line(img, x1, y1, x2, y2, w, h, clr);
             continue;
         }
@@ -172,8 +172,8 @@ int main(void)
             } else {
                 move(cx, cy, x1, y1, &x1, &y1);
                 move(cx, cy, x2, y2, &x2, &y2);
-                x1 -= wx1;
-                y1 -= wy1;
+                x1 -= wx1; x2 -= wx1;
+                y1 -= wy1; y2 -= wx1;
                 line(img, x1, y1, x2, y2, w, h, clr);
                 break;
             }
