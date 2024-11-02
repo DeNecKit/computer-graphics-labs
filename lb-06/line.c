@@ -17,8 +17,15 @@ void line(void *img,
     float dx = abs(x2 - x1);
     float dy = abs(y2 - y1);
 
+#define DRAW(x, y)                                        \
+    do {                                                  \
+        if ((x) >= 0 && (y) >= 0 && (x) < w && (y) < h) { \
+            ((u32*)img)[(int)(y)*w + (int)(x)] = clr;     \
+        }                                                 \
+    } while (0)
+
     if (x1 == x2 && y1 == y2) {
-        ((u32*)img)[(int)y1*w + (int)x1] = clr;
+        DRAW(x1, y1);
         return;
     }
 
@@ -30,11 +37,9 @@ void line(void *img,
     float y = (float)y1;
 
     for (int i = 0; i < l; i++) {
-        if (x >= 0 && y >= 0 && x < w && y < h) {
-            ((u32*)img)[(int)y*w + (int)x] = clr;
-        }
+        DRAW(x, y);
         x += dx;
         y += dy;
     }
-    ((u32*)img)[(int)y2*w + (int)x2] = clr;
+    DRAW(x2, y2);
 }

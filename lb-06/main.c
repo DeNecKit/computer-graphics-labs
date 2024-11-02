@@ -70,9 +70,9 @@ u8 get_code(int x, int y)
 bool at_border(int x, int y, u8 code)
 {
     return ((x == wx1 + eps || x == wx1 - eps) && code & 0b0001) ||
-           ((y == wy1 + eps || y == wy1 - eps) && code & 0b0010 >> 1) ||
-           ((y == wy2 + eps || y == wy2 - eps) && code & 0b0100 >> 2) ||
-           ((x == wx2 + eps || x == wx2 - eps) && code & 0b1000 >> 3);
+           ((y == wy1 + eps || y == wy1 - eps) && (code & 0b0010) >> 1) ||
+           ((y == wy2 + eps || y == wy2 - eps) && (code & 0b0100) >> 2) ||
+           ((x == wx2 + eps || x == wx2 - eps) && (code & 0b1000) >> 3);
 }
 
 void move(int x1, int y1, int x2, int y2,
