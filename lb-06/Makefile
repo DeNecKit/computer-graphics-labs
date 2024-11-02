@@ -1,11 +1,11 @@
 CC = gcc
 SRC = ${wildcard *.c}
 OBJ = ${patsubst %.c, %.o, ${SRC}}
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Wall -Wextra -std=c11 -ggdb
 OUT = main
 LIBS = -lm
 
-.PHONY: run
+.PHONY: run test
 
 ${OUT}: ${OBJ}
 	${CC} ${OBJ} -o ${OUT} ${LIBS}
@@ -15,3 +15,6 @@ ${OUT}: ${OBJ}
 
 run: ${OUT}
 	./${OUT}
+
+test: ${OUT}
+	./${OUT} < input.txt

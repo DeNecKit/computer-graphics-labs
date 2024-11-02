@@ -39,7 +39,7 @@ void write_image(const char *filename,
 
 int parse_int(const char *msg)
 {
-    printf(msg);
+    printf("%s", msg);
     int res;
     if (scanf("%d", &res) != 1) {
         error("Failed to parse integer\n");
@@ -54,24 +54,24 @@ const u32 clr = 0xff000000;
 const int eps = 1;
 
 void line(void *img,
-          float x1, float y1, float x2, float y2,
+          int x1, int y1, int x2, int y2,
           int w, int h, u32 clr);
 
 u8 get_code(int x, int y)
 {
     u8 res = 0;
-    res |= x < wx1 << 3;
-    res |= y > wy2 << 2;
-    res |= y < wy1 << 1;
-    res |= x > wx2;
+    res |= x < wx1;
+    res |= (y < wy1) << 1;
+    res |= (y > wy2) << 2;
+    res |= (x > wx2) << 3;
     return res;
 }
 
 bool at_border(int x, int y, u8 code)
 {
     return ((x == wx1 + eps || x == wx1 - eps) && code & 0b0001) ||
-           ((y == wy2 + eps || y == wy2 - eps) && code & 0b0010 >> 1) ||
-           ((y == wy1 + eps || y == wy1 - eps) && code & 0b0100 >> 2) ||
+           ((y == wy1 + eps || y == wy1 - eps) && code & 0b0010 >> 1) ||
+           ((y == wy2 + eps || y == wy2 - eps) && code & 0b0100 >> 2) ||
            ((x == wx2 + eps || x == wx2 - eps) && code & 0b1000 >> 3);
 }
 
@@ -121,8 +121,8 @@ int main(void)
     h = parse_int("Window height = ");
     if (h <= 0) error("Window height must be positive\n");
 
-    wx2 = wx1 + w;
-    wy2 = wy1 + h;
+    wx2 = wx1 + w - 1;
+    wy2 = wy1 + h - 1;
 
     img = malloc(w * h * IMG_COMP);
     if (img == NULL) {
@@ -144,6 +144,8 @@ int main(void)
         if (c1 & c2) continue;
 
         if (!c1 && !c2) {
+            x1 -= wx1;
+            y1 -= wy1;
             line(img, x1, y1, x2, y2, w, h, clr);
             continue;
         }
@@ -170,6 +172,8 @@ int main(void)
             } else {
                 move(cx, cy, x1, y1, &x1, &y1);
                 move(cx, cy, x2, y2, &x2, &y2);
+                x1 -= wx1;
+                y1 -= wy1;
                 line(img, x1, y1, x2, y2, w, h, clr);
                 break;
             }
@@ -178,7 +182,7 @@ int main(void)
 
     printf("Output filename = ");
     char output[1024] = { 0 };
-    if (scanf("%1024s", output) != 1) {
+    if (scanf("%1023s", output) != 1) {
         error("Failed to parse output filename\n");
     }
 
