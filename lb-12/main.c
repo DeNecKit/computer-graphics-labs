@@ -41,39 +41,6 @@ enum { LEFT_TOP,    TOP,    RIGHT_TOP,
 
 int calc_polygon_pos(array_t *polygon, vec2 wp0, vec2 wp1)
 {
-    // int left = 0, right = 0, top = 0, bottom = 0, inside = 0;
-
-    // for (int i = 0; i < polygon->len; i++) {
-    //     vec3 p = *(vec3*)array_at(polygon, i);
-    //     int pos;
-
-    //     if (p.x > wp0.x && p.x < wp1.x && p.y > wp0.y && p.y < wp1.y) {
-    //         pos = CENTER;
-    //     } else if (p.x < wp0.x) {
-    //         if (p.y > wp1.y) pos = LEFT_BOTTOM;
-    //         else if (p.y < wp0.y) pos = LEFT_TOP;
-    //         else pos = LEFT;
-    //     } else if (p.x > wp1.x) {
-    //         if (p.y > wp1.y) pos = RIGHT_BOTTOM;
-    //         else if (p.y < wp0.y) pos = RIGHT_TOP;
-    //         else pos = RIGHT;
-    //     } else if (p.y < wp0.y) pos = TOP;
-    //     else pos = BOTTOM;
-
-    //     if (pos == LEFT || pos == LEFT_TOP || pos == LEFT_BOTTOM) left++;
-    //     if (pos == RIGHT || pos == RIGHT_TOP || pos == RIGHT_BOTTOM) right++;
-    //     if (pos == TOP || pos == LEFT_TOP || pos == RIGHT_TOP) top++;
-    //     if (pos == BOTTOM || pos == LEFT_BOTTOM || pos == RIGHT_BOTTOM) bottom++;
-    //     if (pos == CENTER) inside++;
-    // }
-
-    // if (inside == polygon->len) return INSIDE;
-    // if (left == polygon->len || right == polygon->len ||
-    //     top == polygon->len || bottom == polygon->len) return OUTSIDE;
-    // if (inside > 0) return CROSSING;
-    // return COVERING;
-
-
     int xmin = INT_MAX, ymin = INT_MAX, xmax = INT_MIN, ymax = INT_MIN;
     for (int i = 0; i < polygon->len; i++) {
         vec3 v = *(vec3*)array_at(polygon, i);
@@ -218,8 +185,6 @@ void draw_window(vec2 wp0, vec2 wp1)
 
 void draw_varnok(vec2 wp0, vec2 wp1, bool show_steps)
 {
-    if (wp0.x == 0)
-
     if (wp0.x == wp1.x || wp0.y == wp1.y) return;
 
     if (show_steps) {
@@ -271,7 +236,7 @@ void draw_varnok(vec2 wp0, vec2 wp1, bool show_steps)
             }
             wprintf(L"Многоугольник №%d %ls\n", i+1, state);
         }
-        wprintf(L"  (нажмите ENTER для продолжения))");
+        wprintf(L"  (нажмите ENTER для продолжения)");
         getchar();
     }
 
@@ -312,16 +277,6 @@ void draw_varnok(vec2 wp0, vec2 wp1, bool show_steps)
 
         draw_varnok(wp01, wp11, show_steps);
         draw_varnok(wp02, wp12, show_steps);
-    }
-}
-
-void save()
-{
-    static int i = 0;
-    i++;
-    if (i == 1) {
-        image_write(filename, image);
-        i = 0;
     }
 }
 
@@ -399,7 +354,7 @@ int main(void)
     while ((c = getchar()) != '\n' && c != EOF);
 
     draw_varnok((vec2) { 0, 0 },
-                (vec2) { 0 + window_width, 0 + window_height },
+                (vec2) { window_width, window_height },
                 choice == 2);
     memset(overlay_image->data, 0x00, overlay_image->w * overlay_image->h * 4);
     draw_axes();
