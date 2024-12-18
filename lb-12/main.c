@@ -168,6 +168,8 @@ void draw_at(vec2 wp0, vec2 wp1)
             }
         }
     }
+
+    free(tmp_image.data);
 }
 
 void draw_window(vec2 wp0, vec2 wp1)
