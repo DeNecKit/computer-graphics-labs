@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
+#include <limits.h>
 #include <wchar.h>
 
 #include "util.h"
